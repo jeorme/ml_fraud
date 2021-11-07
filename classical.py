@@ -9,6 +9,7 @@ import pandas as pd # data processing
 import numpy as np # working with arrays
 import matplotlib.pyplot as plt # visualization
 import itertools # advanced tools
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split # data split
 from sklearn.tree import DecisionTreeClassifier # Decision tree algorithm
@@ -48,7 +49,7 @@ def conf_matrix(cm, classes, title, normalize = False, cmap = plt.cm.Blues):
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-#%%
+#%% EXAMINE DATA
 "Loading the data and examining it"
 
 df = pd.read_csv('creditcard.csv')
@@ -77,10 +78,21 @@ print('--------------------------------------------')
 
 "NB: fraud/nonfraud ratio is only 0.17%"
 
+#Plot amount histogram
+amount_val = df['Amount'].values
+
+fig, ax = plt.subplots(1, 1, figsize=(12,8))
+
+amount_val = df['Amount'].values
+
+sns.distplot(amount_val, ax=ax, color='r')
+ax.set_title('Distribution of Transaction Amount', fontsize=14)
+ax.set_xlim([min(amount_val), max(amount_val)])
+plt.show()
+
 nonfraud_cases = df[df.Class == 0]
 fraud_cases = df[df.Class == 1]
 
-"""
 print("Data statistics")
 print('--------------------------------------------')
 print('Non-fraud stats')
@@ -89,11 +101,12 @@ print('--------------------------------------------')
 print('Fraud stats')
 print(fraud_cases.Amount.describe())
 print('--------------------------------------------')
-"""
+
 #%%
 "DATA SPLIT"
 
 Vs = df.drop('Class', axis = 1).values #Vs vsalues
+
 y = df['Class'].values #Fraud/non-fraud array
 
 normalise = True
