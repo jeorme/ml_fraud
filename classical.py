@@ -84,11 +84,14 @@ amount_val = df['Amount'].values
 fig, ax = plt.subplots(1, 1, figsize=(12,8))
 
 amount_val = df['Amount'].values
-
+plt.yscale("log")
+plt.xscale("log")
 sns.distplot(amount_val, ax=ax, color='r')
 ax.set_title('Distribution of Transaction Amount', fontsize=14)
 ax.set_xlim([min(amount_val), max(amount_val)])
+plt.savefig('amount.png')
 plt.show()
+
 
 nonfraud_cases = df[df.Class == 0]
 fraud_cases = df[df.Class == 1]
@@ -112,17 +115,16 @@ y = df['Class'].values #Fraud/non-fraud array
 normalise = True
 
 if normalise:
-    print('First few values BEFORE normalisation') 
+    # print('First few values BEFORE normalisation') 
     # print(Vs[0:5,-1])
-    # plt.plot(Vs[0:200,-1])
-    plt.show()
+    
     Vs[:,-1] = Vs[:,-1]/np.linalg.norm(Vs[:,-1])
-    print('First few values AFTER normalisation')
+    # print('First few values AFTER normalisation')
     # print(Vs[0:5,-1])
-    # plt.plot(Vs[0:200,-1])
-    plt.show()
+
 
 testtotrain = 0.2
+
 X_train, X_test, y_train, y_test = train_test_split(Vs, y, test_size = testtotrain, random_state = 0)
 
 #%%
@@ -130,7 +132,7 @@ X_train, X_test, y_train, y_test = train_test_split(Vs, y, test_size = testtotra
 # MODELING
 
 # 1. Decision Tree
-
+print("Decission tree running")
 tree_model = DecisionTreeClassifier(max_depth = 4, criterion = 'entropy')
 tree_model.fit(X_train, y_train)
 tree_yhat = tree_model.predict(X_test)
@@ -138,31 +140,31 @@ tree_yhat = tree_model.predict(X_test)
 # 2. K-Nearest Neighbors
 
 n = 5
-
+print("KNN running")
 knn = KNeighborsClassifier(n_neighbors = n)
 knn.fit(X_train, y_train)
 knn_yhat = knn.predict(X_test)
 
 # 3. Logistic Regression
-
+print("Logistic regression running")
 lr = LogisticRegression()
 lr.fit(X_train, y_train)
 lr_yhat = lr.predict(X_test)
 
 # 4. SVM 
-
+print("SVM running")
 svm = SVC()
 svm.fit(X_train, y_train)
 svm_yhat = svm.predict(X_test)
 
 # 5. Random Forest Tree
-
+print("Random forest tree running")
 rf = RandomForestClassifier(max_depth = 4)
 rf.fit(X_train, y_train)
 rf_yhat = rf.predict(X_test)
 
 # 6. XGBoost
-
+print("XGBoost running")
 xgb = XGBClassifier(max_depth = 4)
 xgb.fit(X_train, y_train)
 xgb_yhat = xgb.predict(X_test)
@@ -232,6 +234,7 @@ plt.rcParams['figure.figsize'] = (6, 6)
 tree_cm_plot = conf_matrix(tree_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'Decision Tree')
+plt.savefig('1.png')
 plt.show()
 
 # 2. K-Nearest Neighbors
@@ -239,6 +242,7 @@ plt.show()
 knn_cm_plot = conf_matrix(knn_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'KNN')
+plt.savefig('2.png')
 plt.show()
 
 # 3. Logistic regression
@@ -246,6 +250,7 @@ plt.show()
 lr_cm_plot = conf_matrix(lr_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'Logistic Regression')
+plt.savefig('3.png')
 plt.show()
 
 # 4. Support Vector Machine
@@ -253,6 +258,7 @@ plt.show()
 svm_cm_plot = conf_matrix(svm_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'SVM')
+plt.savefig('4.png')
 plt.show()
 
 # 5. Random forest tree
@@ -260,6 +266,7 @@ plt.show()
 rf_cm_plot = conf_matrix(rf_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'Random Forest Tree')
+plt.savefig('5.png')
 plt.show()
 
 # 6. XGBoost
@@ -267,4 +274,5 @@ plt.show()
 xgb_cm_plot = conf_matrix(xgb_matrix, 
                                 classes = ['Non-Default(0)','Default(1)'], 
                                 normalize = False, title = 'XGBoost')
+plt.savefig('6.png')
 plt.show()
