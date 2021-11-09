@@ -1,4 +1,4 @@
-# Fraud detection - machile learning algorithms with a quantum twist
+# Fraud detection - machine learning algorithms with a quantum twist
 ## Task:
 Our goal is to exploit the power of machine learning for fraud detection. In particular, we want to explore the potential of quantum computing for tackling this classical problem.<\br>
 For this project we will use a dataset containing the transaction made by credit cards in September 2013 by European cardholders. The data set and more information on it can be found [here](https://www.kaggle.com/mlg-ulb/creditcardfraud).
