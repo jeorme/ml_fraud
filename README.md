@@ -18,7 +18,7 @@ Another issue that arises from this highly unbalanced data is poor training: the
 ### Results (preliminary):
 We were only able to obtain results for the classical machine learning and neural network algorithms with no SMOTE.
 <p align="center">
-<br/><img src='/ml_clas_results.png' width="450">
+<br/><img src='/img/ml_clas_results.png' width="450">
 </p>
 <p>
 <em>Results for the classical ML algorithms with no SMOTE. The K-NN algorithm proves to be the best performing in terms of accuracy, F1 and recall. However, due to the unbalance data issue, only 80 fraud cases were present in our test data, so the results need to be taken with a pinch of salt.</em>
@@ -28,7 +28,7 @@ When incorporating SMOTE we ran into convergence issues and large computational 
 
 The preliminary results of the hybrid algorithm suggested it was working correctly, but it had to be run on only 10% of the data set due to large computational times.
 <p align="center">
-<br/><img src='/prel_hybrid.jfif' width="450">
+<br/><img src='/img/prel_hybrid.jfif' width="450">
 </p>
 <p>
 <em>Preliminary training results of the hybrid machine learning code for only 10% of the total data set, no SMOTE. The algorithm seems to be working correctly but computational times are too large.</em>
