@@ -4,15 +4,12 @@ Created on Sat Nov  6 13:01:51 2021
 
 @author: sgonzalez
 """
-import math as math
 import tensorflow as tf
-import tensorflow_datasets as tfds
 from tensorflow import keras
-#from sklearn.preprocessing import StandardScaler # data normalization
-from tensorflow.keras import layers
 from keras.layers import Dense
 from keras.models import Sequential
-from keras.layers import Dropout
+
+from imblearn.over_sampling import SMOTE
 
 import pandas as pd
 import pennylane as qml
@@ -84,12 +81,17 @@ if normalise:
     #plt.show()
 
 #truncate data for testing
-Vs = Vs[90000:100000]
-y = y[90000:100000]
 
 testtotrain = 0.2
 X_train, X_test, y_train, y_test = train_test_split(Vs, y, test_size = testtotrain, random_state = 0)
 
+smote = False
+if smote:
+    print("Frauds in train before SMOTE", np.sum(y_train))
+    os = SMOTE(sampling_strategy='minority',random_state = 1,k_neighbors=5)
+    X_train,y_train = os.fit_resample(X_train,y_train)
+    print("Frauds in train after SMOTE", np.sum(y_train))
+    
 #crop for testing
 '''
 def one_hot(labels):     
@@ -98,6 +100,10 @@ def one_hot(labels):
     one_hot_labels = np.eye(depth)[indices].astype(np.float32) 
     return one_hot_labels
 '''
+print("Frauds in train", np.sum(y_train))
+X_train = X_train[0:10000]
+y_train = y_train[0:10000]
+print("Frauds in train", np.sum(y_train))
 #%% QUANTUM LAYER
 """We make a quantum layer using Pennylane. This will then be converted into a 
 classical Keras layer using the Pennylane class pennylane.qnn.KerasLayer. For more
@@ -130,15 +136,18 @@ print("Quantum layer created")
 tf.keras.backend.set_floatx('float64')
 
 model=Sequential() #create model
-print("model created")
-#add layers to our hybrid model
-model.add(Dense(units=2,kernel_initializer='he_normal',activation='relu'))
-model.add(qlayer)
-model.add(Dense(units=2,kernel_initializer='he_normal',activation='softmax'))
 
+#add layers to our hybrid model
+#activation parameters chosen arbitrarily - look into this!
+model.add(Dense(units=2, activation='swish'))
+model.add(qlayer)
+model.add(Dense(units=1,activation='sigmoid')) #Sigmoid is equivalent to a 2-element Softmax, 
+#where the second element is assumed to be zero. The sigmoid function always returns a value between 0 and 1.
 print("Quantum and classical layers added")
-model.compile(optimizer='Adamax',loss='binary_crossentropy',metrics=['accuracy'])
-history = model.fit(X_train, y_train, batch_size = len(X_train), epochs = 5,validation_split=0.2)
+
+opt = tf.keras.optimizers.SGD(learning_rate=0.01)
+model.compile(opt, loss="mae", metrics=["accuracy"])
+history = model.fit(X_train, y_train, batch_size = 10, epochs = 5,validation_split=0.2)
 
 #%%EVALUATION 
 
