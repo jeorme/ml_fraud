@@ -11,6 +11,9 @@ import matplotlib.pyplot as plt # visualization
 import itertools # advanced tools
 import seaborn as sns
 
+from imblearn.combine import SMOTETomek
+from imblearn.over_sampling import SMOTE
+
 from sklearn.model_selection import train_test_split # data split
 from sklearn.tree import DecisionTreeClassifier # Decision tree algorithm
 from sklearn.neighbors import KNeighborsClassifier # KNN algorithm
@@ -117,16 +120,19 @@ normalise = True
 if normalise:
     # print('First few values BEFORE normalisation') 
     # print(Vs[0:5,-1])
-    
+    plt.show()
     Vs[:,-1] = Vs[:,-1]/np.linalg.norm(Vs[:,-1])
     # print('First few values AFTER normalisation')
     # print(Vs[0:5,-1])
-
-
+    plt.show()
+    
 testtotrain = 0.2
-
 X_train, X_test, y_train, y_test = train_test_split(Vs, y, test_size = testtotrain, random_state = 0)
-
+print("Frauds in train before SMOTE", np.sum(y_train))
+#SMOTE
+os = SMOTE(sampling_strategy='minority',random_state = 1,k_neighbors=5)
+X_train,y_train = os.fit_resample(X_train,y_train)
+print("Frauds in train after SMOTE", np.sum(y_train))
 #%%
 
 # MODELING
